@@ -1,0 +1,224 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Дневник путешествий</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link rel="icon" href="data:," />
+        <!-- Пустая favicon чтобы избежать 404 ошибки -->
+    </head>
+    <body>
+        <div class="app-container">
+            <header class="app-header">
+                <div class="logo">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h1>Дневник путешествий</h1>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li>
+                            <a href="#" id="home-link" class="active"><i class="fas fa-home"></i> Главная</a>
+                        </li>
+                        <li>
+                            <a href="#" id="my-travels-link"><i class="fas fa-book"></i> Мои путешествия</a>
+                        </li>
+                        <li>
+                            <a href="#" id="add-travel-link"><i class="fas fa-plus-circle"></i> Добавить</a>
+                        </li>
+                        <li>
+                            <a href="#" id="explore-link"><i class="fas fa-compass"></i> Исследовать</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <div id="auth-buttons">
+                        <button id="login-btn" class="btn btn-primary">Войти</button>
+                        <button id="register-btn" class="btn btn-secondary">Регистрация</button>
+                    </div>
+                    <div id="user-profile" class="hidden">
+                        <span id="username-display"></span>
+                        <button id="logout-btn" class="btn btn-warning">Выйти</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="app-main">
+                <!-- Модальное окно авторизации -->
+                <div id="auth-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+
+                        <!-- Форма входа (отдельная форма) -->
+                        <form id="login-form" class="auth-form">
+                            <h2>Вход в систему</h2>
+                            <div class="form-group">
+                                <label for="login-username">Имя пользователя</label>
+                                <input type="text" id="login-username" required minlength="3" autocomplete="username" />
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Пароль</label>
+                                <input type="password" id="login-password" required minlength="6" autocomplete="current-password" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Войти</button>
+                            <p class="auth-switch-text">Нет аккаунта? <a href="#" id="show-register">Зарегистрироваться</a></p>
+                        </form>
+
+                        <!-- Форма регистрации (отдельная форма) -->
+                        <form id="register-form" class="auth-form hidden">
+                            <h2>Регистрация</h2>
+                            <div class="form-group">
+                                <label for="register-username">Имя пользователя</label>
+                                <input type="text" id="register-username" required minlength="3" autocomplete="username" />
+                            </div>
+                            <div class="form-group">
+                                <label for="register-password">Пароль</label>
+                                <input type="password" id="register-password" required minlength="6" autocomplete="new-password" />
+                            </div>
+                            <div class="form-group">
+                                <label for="register-email">Email</label>
+                                <input type="email" id="register-email" autocomplete="email" />
+                            </div>
+                            <div class="form-group">
+                                <label for="register-confirm-password">Подтвердите пароль</label>
+                                <input type="password" id="register-confirm-password" autocomplete="new-password" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                            <p class="auth-switch-text">Уже есть аккаунт? <a href="#" id="show-login">Войти</a></p>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Главная страница -->
+                <section id="home-section" class="page-section">
+                    <h2>Последние путешествия</h2>
+                    <div class="travel-grid" id="featured-travels">
+                        <!-- Карточки будут загружены через JS -->
+                    </div>
+                </section>
+
+                <!-- Мои путешествия -->
+                <section id="my-travels-section" class="page-section hidden">
+                    <div class="section-header">
+                        <h2>Мои путешествия</h2>
+                        <button id="sort-travels-btn" class="btn btn-secondary">Сортировать по дате</button>
+                    </div>
+                    <div class="travel-grid" id="my-travels">
+                        <!-- Карточки будут загружены через JS -->
+                    </div>
+                </section>
+
+                <!-- Добавить путешествие -->
+                <section id="add-travel-section" class="page-section hidden">
+                    <h2>Добавить новое путешествие</h2>
+                    <form id="add-travel-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="travel-title">Название*</label>
+                                <input type="text" id="travel-title" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="travel-date">Дата*</label>
+                                <input type="date" id="travel-date" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="travel-location">Местоположение*</label>
+                            <div class="location-input">
+                                <input type="text" id="travel-location" required />
+                                <button type="button" id="get-location-btn" class="btn btn-secondary"><i class="fas fa-location-arrow"></i> Определить автоматически</button>
+                            </div>
+                            <small id="location-coords"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="travel-description">Описание*</label>
+                            <textarea id="travel-description" rows="5" required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="travel-image">Изображение</label>
+                                <input type="file" id="travel-image" accept="image/*" />
+                                <div class="image-preview hidden" id="image-preview"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="travel-cost">Стоимость (руб)</label>
+                                <input type="number" id="travel-cost" min="0" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="travel-safety">Безопасность (1-5)</label>
+                                <div class="rating-input">
+                                    <select id="travel-safety">
+                                        <option value="0">Не оценивалось</option>
+                                        <option value="1">1 - Опасно</option>
+                                        <option value="2">2 - Небезопасно</option>
+                                        <option value="3">3 - Нормально</option>
+                                        <option value="4">4 - Безопасно</option>
+                                        <option value="5">5 - Очень безопасно</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="travel-transport">Удобство передвижения (1-5)</label>
+                                <div class="rating-input">
+                                    <select id="travel-transport">
+                                        <option value="0">Не оценивалось</option>
+                                        <option value="1">1 - Очень плохо</option>
+                                        <option value="2">2 - Плохо</option>
+                                        <option value="3">3 - Удовлетворительно</option>
+                                        <option value="4">4 - Хорошо</option>
+                                        <option value="5">5 - Отлично</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="travel-places">Места для посещения (через запятую)</label>
+                            <textarea id="travel-places" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Сохранить путешествие</button>
+                            <button type="reset" class="btn btn-secondary">Очистить форму</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Исследовать -->
+                <section id="explore-section" class="page-section hidden">
+                    <div class="section-header">
+                        <h2>Исследовать путешествия</h2>
+                        <div class="search-filter">
+                            <input type="text" id="search-travel" placeholder="Поиск по названию или месту" />
+                            <select id="filter-safety">
+                                <option value="0">Любая безопасность</option>
+                                <option value="5">5 - Очень безопасно</option>
+                                <option value="4">4 - Безопасно</option>
+                                <option value="3">3 - Нормально</option>
+                                <option value="2">2 - Небезопасно</option>
+                                <option value="1">1 - Опасно</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="travel-grid" id="explore-travels">
+                        <!-- Карточки будут загружены через JS -->
+                    </div>
+                </section>
+            </main>
+
+            <footer class="app-footer">
+                <p>&copy; 2023 Дневник путешествий. Все права защищены.</p>
+            </footer>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
